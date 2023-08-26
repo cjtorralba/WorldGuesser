@@ -1,6 +1,6 @@
 use crate::error::AppError;
+use axum::async_trait;
 use axum::extract::FromRequestParts;
-use axum::{async_trait};
 use cookie::Cookie;
 use derive_more::Display;
 use http::request::Parts;

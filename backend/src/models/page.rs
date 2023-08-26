@@ -1,3 +1,5 @@
+use crate::error::AppError;
+use crate::haversine_distance;
 use crate::models::city::City;
 use crate::models::city_with_image::CityAndImage;
 use crate::models::maps::InteractiveMap;
@@ -6,8 +8,6 @@ use axum::Json;
 use serde_derive::{Deserialize, Serialize};
 use tera::ast::ExprVal::Float;
 use tracing::info;
-use crate::error::AppError;
-use crate::haversine_distance;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PagePackage {
@@ -19,7 +19,6 @@ pub struct PagePackage {
 pub struct CityPage {
     pub city: City,
 }
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DistancePage {
@@ -33,11 +32,9 @@ impl IntoResponse for DistancePage {
 }
 
 impl DistancePage {
-
     pub fn new(city: City, lat: f32, lng: f32) -> Result<Self, AppError> {
         let distance_unrounded: f32 = haversine_distance(city.latitude, city.longitude, lat, lng);
         let distance_rounded_string = format!("{:.3}", distance_unrounded);
-
 
         info!("Distance rounded: {}", distance_rounded_string);
 
@@ -46,7 +43,6 @@ impl DistancePage {
         })
     }
 }
-
 
 impl IntoResponse for PagePackage {
     fn into_response(self) -> Response {

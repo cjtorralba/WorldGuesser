@@ -33,7 +33,6 @@ pub enum AppError {
     Any(anyhow::Error),
 }
 
-
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
@@ -80,7 +79,6 @@ impl IntoResponse for AppError {
             AppError::ParseError(err) => {
                 let message = format!("Parsing Distance error: {}", err);
                 (StatusCode::SERVICE_UNAVAILABLE, message)
-
             }
         };
 

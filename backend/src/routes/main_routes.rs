@@ -22,8 +22,6 @@ pub async fn app(pool: PgPool) -> Router {
         .route("/login", post(handlers::login))
         .route("/guess", post(handlers::guess_location))
         .route("/protected", get(handlers::protected))
-
-
         // Catch all route, AKA: 404
         .route("/*_", get(handle_404)) // '/*_' will match anything not in our routes above
         // .merge(city_routes())

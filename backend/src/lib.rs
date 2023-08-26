@@ -3,12 +3,12 @@ use crate::error::AppError;
 use base64::encode;
 use dotenvy::dotenv;
 use image::{GenericImageView, ImageOutputFormat};
-use std::io::{Cursor};
+use std::io::Cursor;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use tracing::{debug};
+use tracing::debug;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
@@ -25,7 +25,6 @@ const EARTH_RADIUS_KM: f32 = 6371.0;
 #[allow(dead_code)]
 const KM_TO_MILES: f32 = 0.621371;
 
-
 /// Initializes logging for us, so we can see information about requests
 fn init_logging() {
     //From https://github.com/tokio-rs/axum/blob/main/examples/tracing-aka-logging
@@ -38,7 +37,6 @@ fn init_logging() {
         .init();
 }
 
-
 /// Gets the host value from the .env file
 fn get_host_from_env() -> SocketAddr {
     let host = std::env::var("API_HOST").unwrap();
@@ -48,8 +46,6 @@ fn get_host_from_env() -> SocketAddr {
 
     SocketAddr::from((api_host, api_port))
 }
-
-
 
 /// Runs our backend and initiallizes most of the things we need to run the backend
 pub async fn run_backend() {
@@ -69,7 +65,6 @@ pub async fn run_backend() {
     debug!("Application initialized");
 }
 
-
 /// This function gets the timestamp of the current time after 8 hours
 pub fn get_timestamp_after_8_hours() -> u64 {
     let now = SystemTime::now();
@@ -83,8 +78,6 @@ pub fn get_timestamp_after_8_hours() -> u64 {
         );
     eight_hours_from_now.as_secs()
 }
-
-
 
 /// This function takes an image string, which in this case will usually be a base64 encoded version of a png
 /// It then returns another base64 encoded string, but with 20 pixels cut off from the bottom
@@ -112,8 +105,6 @@ pub fn crop_image(img_str: String) -> Result<String, AppError> {
     Ok(return_string)
 }
 
-
-
 /// This function calculates the distance between two points, each point has a corresponding latitude and longitude.
 pub fn haversine_distance(lat1: f32, lon1: f32, lat2: f32, lon2: f32) -> f32 {
     let d_lat = (lat2 - lat1).to_radians();
@@ -125,7 +116,6 @@ pub fn haversine_distance(lat1: f32, lon1: f32, lat2: f32, lon2: f32) -> f32 {
 
     EARTH_RADIUS_KM * c
 }
-
 
 pub type AppResult<T> = Result<T, AppError>;
 

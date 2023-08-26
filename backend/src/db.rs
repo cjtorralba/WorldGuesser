@@ -2,7 +2,7 @@ use axum::Json;
 use serde_json::Value;
 
 use sqlx::postgres::PgPoolOptions;
-use sqlx::{PgPool};
+use sqlx::PgPool;
 use tracing::{error, info};
 
 use crate::error::AppError;

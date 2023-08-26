@@ -6,14 +6,30 @@ use crate::models::city::City;
 use crate::models::maps::InteractiveMap;
 use crate::models::page::PagePackage;
 
+/// Contains a City and an Image String
+/// # Parameters:
+/// * city - the [City](City) specified
+/// * image - An image, specified in a [base64](base64) encoded string, the format of this string is ready
+/// to be embedded in html, as it is prefixed with ```data:image/png;base64, image_string```
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CityAndImage {
     city: City,
     image: String,
-    // Some image
 }
 
 impl CityAndImage {
+    /// Gets a random City using the [City::get_random_city()](City::get_random_city) then makes a Request to the
+    /// [Google Map API](https://developers.google.com/maps/documentation/maps-static/overview) to get a static satellite image.
+    /// Request is sent using [Reqwest::get](reqwest::get)
+    ///
+    /// A Google API KEY must be specified in your ```.env``` file: ```GOOGLE_KEY=your_google_api_key```
+    ///
+    /// # Returns:
+    /// * Result<[Self](CityAndImage), [AppError](AppError)>
+    ///
+    /// # Examples:
+    ///
+    ///
     pub async fn get_random_city_and_image() -> Result<Self, AppError> {
         let random_city = City::get_random_city().await;
 
@@ -57,6 +73,9 @@ impl CityAndImage {
 
     /// This function returns a City ins PagePackage form, which is what we use with Tera to be able
     /// to view information from within the .html file itself
+    ///
+    /// # Returns:
+    /// * Result<[PagePackage](PagePackage), [AppError](AppError)>
     pub async fn get_city_in_page_form() -> Result<PagePackage, AppError> {
         let city = CityAndImage::get_random_city_and_image().await?;
 
