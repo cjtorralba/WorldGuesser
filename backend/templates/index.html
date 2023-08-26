@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Guess</title>
+  <link rel="stylesheet" type="text/css" href="index_styles.css">
+</head>
+
+<body style="background-color: #333333;">
+{% if is_logged_in %}
+<!-- Show dashboard -->
+<h2>Dashboard</h2>
+
+
+{% else %}
+<!-- Show login form -->
+<h2>Login</h2>
+<form action="/login" method="post">
+  <label for="email">Email:</label>
+  <input type="text" id="email" name="email">
+
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password">
+
+  <input type="hidden" id="rank" name="rank" value="0">
+
+  <input type="submit" value="Login">
+
+
+</form>
+{% endif %}
+
+<h2>Register</h2>
+
+
+<form action="/users" method="post">
+
+  <label for="email">Email:</label>
+  <input type="text" id="register_email" name="email">
+
+  <label for="password">Password:</label>
+  <input type="password" id="register_password" name="password">
+
+
+  <label for="confirm_password">Password:</label>
+  <input type="password" id="confirm_password" name="confirm_password">
+
+  <input type="submit" value="Register!">
+</form>
+
+
+</body>
+</html>

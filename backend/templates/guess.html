@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div style="text-align: center;">
+    <p id="guess_text" >
+        The city you had to guess was {{ city_page.city.city }}, {{ city_page.city.state }}, you were {{ distance_page.distance }} kilometers off!
+    </p>
+</div>
+<div id="image" style="text-align: center;">
+    <img src= {{ static_map.image_string }} alt="Static satellite image with markers showing distance from origin.">
+</div>
+
+<form action="/" style="text-align: center; padding: 20px;">
+    <input type="submit" value="Try Again!">
+</form>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalGuess</title>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+
+<body style="background-color: #333333">
+
+<h4 style="color: white;">Welcome to the Totally Not GeoGuessr</h4>
+<p style="color: white;">
+    As of now you will be provided a picture of a random city in the US, there will be more locations soon.
+    Feel free to switch between Satellite mode and Map mode. Try your best!
+</p>
+
+    <div class="package" style="border: 2px black solid;">
+        <div id="image" style="text-align: center;">
+                <img src= {{ page.city_image.image }} alt="Random Satellite Image on Earth">
+        </div>
+    </div>
+
+    <div id="map"></div>
+    <script>
+    function initMap() {
+        const myLatlng = { lat: 0.0, lng: 0.0 };
+
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 4,
+            center: myLatlng,
+        });
+        // Create the initial InfoWindow.
+        let infoWindow = new google.maps.InfoWindow({
+            content: "Make a guess!",
+            position: myLatlng,
+        });
+
+        infoWindow.open(map);
+        // Configure the click listener.
+        map.addListener("click", (mapsMouseEvent) => {
+            // Close the current InfoWindow.
+            infoWindow.close();
+            // Create a new InfoWindow.
+            infoWindow = new google.maps.InfoWindow({
+                position: mapsMouseEvent.latLng,
+            });
+            infoWindow.setContent(
+                JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2),
+            );
+
+            document.getElementById('lat').value = mapsMouseEvent.latLng.lat();
+            document.getElementById('lng').value = mapsMouseEvent.latLng.lng();
+
+            infoWindow.open(map);
+        });
+
+        document.getElementById("exportLatLng").addEventListener("click", () => {
+            if (infoWindow && infoWindow.getPosition()) {
+                const coordinates = infoWindow.getPosition().toJSON();
+
+            }
+        })
+
+    }
+    window.initMap = initMap;
+    </script>
+
+    <script
+     src={{ page.map.request_string }} async defer>
+
+    </script>
+
+    <form method="post" action="/guess" style="text-align: center; padding: 20px;">
+        <input type="hidden" id="lat" name="lat"/>
+        <input type="hidden" id="lng" name="lng"/>
+        <input type="hidden" id="city_id" name="city_id" value={{ page.city_image.city.rank }} />
+
+        <input type="submit" value="Submit Guess"/>
+    </form>
+</body>
+</html>
