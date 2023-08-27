@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard!</title>
+</head>
+<body>
+
+{% for user in leaderboard.user_list %}
+
+    <div class="user_row">
+        <p>User: {{ user.email }} Rank: {{ user.rank }}</p>
+    </div>
+
+{% endfor %}
+</body>
+</html>

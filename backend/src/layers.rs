@@ -3,6 +3,10 @@ use tower_http::classify::{ServerErrorsAsFailures, SharedClassifier};
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
 
+
+/// Cors Layers
+/// Allowing all methods, including GET, POST, PUT, DELETE, and OPTIONS
+/// Also enables tracing
 pub fn get_layers() -> (
     CorsLayer,
     TraceLayer<SharedClassifier<ServerErrorsAsFailures>>,

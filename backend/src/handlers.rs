@@ -20,6 +20,7 @@ use crate::models::city::City;
 use crate::{get_timestamp_after_8_hours, haversine_distance};
 
 use crate::models::city_with_image::CityAndImage;
+use crate::models::leaderboard::LeaderBoard;
 use crate::models::location::Location;
 use crate::models::maps::StaticGuessMap;
 use crate::models::page::DistancePage;
@@ -27,7 +28,16 @@ use crate::models::user::{Claims, OptionalClaims, User, UserSignup, KEYS};
 
 use crate::template::TEMPLATES;
 
-// This is the index.html page
+
+
+/// Root routing page. just the "/" route.
+/// # Returns:
+/// [Result](Result)<[Html](Html)<[String](String)>, [AppError](AppError)>
+///
+/// # Arguments:
+/// Uses dependency injection to get:
+/// * [State](State)
+/// * [OptionalClaims](OptionalClaims)
 pub async fn root(
     State(_database): State<Store>,
     OptionalClaims(claims): OptionalClaims,
@@ -157,11 +167,49 @@ pub async fn register(
     }
 }
 
+
+/// TODO: Do something with the optional claims, highlight the specific users rank if possible, as in the claims is Some
+pub async fn leaderboard(
+    State(database): State<Store>,
+    OptionalClaims(claims): OptionalClaims
+    ) -> Result<Response<Body>, AppError> {
+
+    let user_rank_list = database.get_top_num_users(100).await?; // TODO: change this to NOT A MAGIC NUMBER
+    let leaderboard = LeaderBoard::new(user_rank_list);
+
+
+    let mut context = Context::new();
+
+    let template_name = {
+        context.insert("leaderboard", &leaderboard);
+        "leaderboard.html"
+    };
+
+    // Render html template with that context
+    let rendered = TEMPLATES
+        .render(template_name, &context)
+        .unwrap_or_else(|err| {
+            error!("Template rendering error: {}", err);
+            panic!()
+        });
+
+    let response = Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "text/html")
+        .body(rendered.into())
+        .expect("Failed to build response.");
+
+    Ok(response)
+}
+
 pub async fn guess_location(
-    State(_database): State<Store>,
+    State(database): State<Store>,
     OptionalClaims(claims): OptionalClaims,
     Form(location): Form<Location>,
 ) -> Result<Response<Body>, AppError> {
+
+    database.get_top_num_users(4).await?;
+
     let mut context = Context::new();
 
     let template_name = if let Some(claims_data) = claims {
@@ -223,7 +271,10 @@ pub async fn login(
             info!("User DID exist");
             let is_password_correct =
                 match argon2::verify_encoded(&user.password, creds.password.as_bytes()) {
-                    Ok(result) => result,
+                    Ok(result) => {
+                        info!("Password was correct");
+                        result
+                    },
                     Err(_) => {
                         return Err(AppError::InternalServerError);
                     }
@@ -241,12 +292,18 @@ pub async fn login(
                 exp: get_timestamp_after_8_hours(),
             };
 
+            info!("Generated Claims: {}", claims);
+
             let token = jsonwebtoken::encode(&Header::default(), &claims, &KEYS.encoding)
                 .map_err(|_| AppError::MissingCredentials)?;
+
+            info!("Build token string: {}", token);
 
             // No longer needed since we are using cookies
             // Ok(Json(json!({"access_token" : token, "type" : "Bearer"})))
             let cookie = cookie::Cookie::build("jwt", token).http_only(true).finish();
+
+            info!("Built cookie");
 
             let mut response = Response::builder()
                 .status(StatusCode::FOUND)
@@ -261,6 +318,8 @@ pub async fn login(
                 SET_COOKIE,
                 HeaderValue::from_str(&cookie.to_string()).unwrap(),
             );
+
+            info!("Built response");
 
             Ok(response)
         }

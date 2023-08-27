@@ -38,6 +38,8 @@ fn init_logging() {
 }
 
 /// Gets the host value from the .env file
+/// # Returns:
+/// * [SocketAddr]
 fn get_host_from_env() -> SocketAddr {
     let host = std::env::var("API_HOST").unwrap();
     let api_host = IpAddr::from_str(&host).unwrap();
@@ -48,6 +50,7 @@ fn get_host_from_env() -> SocketAddr {
 }
 
 /// Runs our backend and initiallizes most of the things we need to run the backend
+/// Fetches .env file, initializes logging, gets and binds server address
 pub async fn run_backend() {
     // Get environment variables from .env file
     dotenv().ok();
@@ -66,6 +69,8 @@ pub async fn run_backend() {
 }
 
 /// This function gets the timestamp of the current time after 8 hours
+/// # Returns:
+/// * [u64](std::u64)
 pub fn get_timestamp_after_8_hours() -> u64 {
     let now = SystemTime::now();
     let since_epoch = now.duration_since(UNIX_EPOCH).expect("Time went backward?");
@@ -81,6 +86,24 @@ pub fn get_timestamp_after_8_hours() -> u64 {
 
 /// This function takes an image string, which in this case will usually be a base64 encoded version of a png
 /// It then returns another base64 encoded string, but with 20 pixels cut off from the bottom
+///
+/// # Arguments:
+/// * img_string: [String] - The images you want to crop in [base64](base64) encode format.
+///
+/// # Returns:
+/// * [Result]<[String], [AppError]>
+///
+/// # Examples:
+/// Using a [reqwest::get](reqwest::get) to fetch an image in png format from wherever you would like.
+/// ```rust
+/// let google_response = reqwest::get("image_request.com").await?;
+///
+/// let image_bytes = google_response.bytes().await?;
+///
+/// let image_string = base64::encode(&image_bytes);
+/// let cropped_string = crop_image(image_string.clone())?;
+///
+/// ```
 pub fn crop_image(img_str: String) -> Result<String, AppError> {
     let decoded = base64::decode(img_str)?;
 
@@ -106,12 +129,20 @@ pub fn crop_image(img_str: String) -> Result<String, AppError> {
 }
 
 /// This function calculates the distance between two points, each point has a corresponding latitude and longitude.
-pub fn haversine_distance(lat1: f32, lon1: f32, lat2: f32, lon2: f32) -> f32 {
+/// # Arguments:
+/// * lat1: f32 - [Latitude](https://en.wikipedia.org/wiki/Latitude) of fist location
+/// * lng1: f32 - [Longitude](https://en.wikipedia.org/wiki/Longitude) of fist location
+/// * lat2: f32 - Latitude of second location
+/// * lng2: f32 - Longitude of second location
+///
+/// # Returns:
+/// [f32](std::f32)
+pub fn haversine_distance(lat1: f32, lng1: f32, lat2: f32, lng2: f32) -> f32 {
     let d_lat = (lat2 - lat1).to_radians();
-    let d_lon = (lon2 - lon1).to_radians();
+    let d_lng = (lng2 - lng1).to_radians();
 
     let a = (d_lat / 2.0).sin().powi(2)
-        + lat1.to_radians().cos() * lat2.to_radians().cos() * (d_lon / 2.0).sin().powi(2);
+        + lat1.to_radians().cos() * lat2.to_radians().cos() * (d_lng / 2.0).sin().powi(2);
     let c = 2.0 * a.sqrt().atan2((1.0 - a).sqrt());
 
     EARTH_RADIUS_KM * c

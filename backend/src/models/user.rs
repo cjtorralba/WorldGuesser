@@ -1,5 +1,5 @@
 use crate::error::AppError;
-use axum::async_trait;
+use axum::{async_trait, Json};
 use axum::extract::FromRequestParts;
 use cookie::Cookie;
 use derive_more::Display;
@@ -8,11 +8,34 @@ use jsonwebtoken::{decode, DecodingKey, EncodingKey, Validation};
 use once_cell::sync::Lazy;
 use serde_derive::{Deserialize, Serialize};
 use std::convert::Infallible;
+use axum::response::{IntoResponse, Response};
+use sqlx::postgres::PgRow;
 
+
+
+/// Contains information vital to users
 #[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
 pub struct User {
+    /// The users email address
     pub email: String,
+
+    /// The users password
     pub password: String,
+}
+
+
+
+/// Contains users email and rank on the leaderboard.
+#[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
+pub struct UserAndRank {
+    pub email: String,
+    pub rank: i32,
+}
+
+impl IntoResponse for UserAndRank {
+    fn into_response(self) -> Response {
+        Json(self).into_response()
+    }
 }
 
 #[derive(Serialize, Deserialize, sqlx::FromRow)]

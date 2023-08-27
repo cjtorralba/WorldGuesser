@@ -4,3 +4,4 @@ pub mod location;
 pub mod maps;
 pub mod page;
 pub mod user;
+pub mod leaderboard;

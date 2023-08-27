@@ -5,6 +5,9 @@ use http::StatusCode;
 use hyper::Body;
 use sqlx::PgPool;
 
+use tower_http::services::*;
+
+
 use crate::db::Store;
 use crate::handlers::root;
 use crate::{handlers, layers};
@@ -15,15 +18,18 @@ pub async fn app(pool: PgPool) -> Router {
 
     let (cors_layer, trace_layer) = layers::get_layers();
 
+
     Router::new()
         .route("/", get(root))
         // MATCHES EXPLICITLY FROM TOP TO BOTTOM
         .route("/users", post(handlers::register))
         .route("/login", post(handlers::login))
         .route("/guess", post(handlers::guess_location))
+        .route("/leaderboard", get(handlers::leaderboard))
         .route("/protected", get(handlers::protected))
         // Catch all route, AKA: 404
         .route("/*_", get(handle_404)) // '/*_' will match anything not in our routes above
+        .nest_service("/templates", ServeDir::new("styles.css"))
         // .merge(city_routes())
         .layer(cors_layer)
         .layer(trace_layer)

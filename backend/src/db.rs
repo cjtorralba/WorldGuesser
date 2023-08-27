@@ -2,11 +2,11 @@ use axum::Json;
 use serde_json::Value;
 
 use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
+use sqlx::{PgPool, Row};
 use tracing::{error, info};
 
 use crate::error::AppError;
-use crate::models::user::{User, UserSignup};
+use crate::models::user::{User, UserAndRank, UserSignup};
 
 #[derive(Clone)]
 pub struct Store {
@@ -75,4 +75,30 @@ impl Store {
             ))
         }
     }
+
+    /// Gets the top 100 users in the database by ranking. If there are less than 100 users, it will get how many it can.
+    /// # Returns:
+    /// Result<[Vec]<[UserAndRank]>, [AppError]>
+    pub async fn get_top_num_users(&self, num_users: i32) -> Result<Vec<UserAndRank>, AppError> {
+        let rows = sqlx::query(
+            r#"
+                SELECT * FROM users WHERE rank > 0 AND rank <= $1
+            "#)
+            .bind(num_users)
+            .fetch_all(&self.conn_pool)
+            .await?;
+
+
+        let mut user_vec: Vec<UserAndRank> = Vec::new();
+
+        for row in rows {
+            let user = UserAndRank {
+                email: row.get("email"),
+                rank: row.get("rank"),
+            };
+            user_vec.push(user);
+        }
+        Ok(user_vec)
+    }
+
 }
