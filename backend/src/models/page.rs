@@ -8,6 +8,7 @@ use axum::Json;
 use serde_derive::{Deserialize, Serialize};
 use tera::ast::ExprVal::Float;
 use tracing::info;
+use crate::models::user::UserAndScore;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PagePackage {
@@ -42,6 +43,13 @@ impl DistancePage {
             distance: distance_rounded_string,
         })
     }
+
+   pub fn calculate_score(user: UserAndScore) -> i32 {
+
+
+
+       todo!();
+   }
 }
 
 impl IntoResponse for PagePackage {

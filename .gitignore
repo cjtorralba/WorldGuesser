@@ -3,3 +3,4 @@
 target
 Cargo.lock
 Dockerfile
+docker-compose.yaml

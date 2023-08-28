@@ -32,6 +32,17 @@ pub struct UserAndRank {
     pub rank: i32,
 }
 
+
+/// Contains users email and rank on the leaderboard.
+#[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
+pub struct UserAndScore {
+    pub email: String,
+    pub score: i32,
+    pub num_guesses: i32,
+}
+
+
+
 impl IntoResponse for UserAndRank {
     fn into_response(self) -> Response {
         Json(self).into_response()
