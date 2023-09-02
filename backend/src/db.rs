@@ -6,7 +6,7 @@ use sqlx::{PgPool, Row};
 use tracing::{error, info};
 
 use crate::error::AppError;
-use crate::models::user::{User, UserAndRank, UserSignup};
+use crate::models::user::{LoggedInUser, User, UserAndRank, UserAndScore, UserForClaims, UserSignup};
 
 #[derive(Clone)]
 pub struct Store {
@@ -39,10 +39,13 @@ impl Store {
         Ok(())
     }
 
-    pub async fn get_user(&self, email: &str) -> Result<Option<User>, AppError> {
-        let user = sqlx::query_as::<_, User>(
+    pub async fn get_user(&self, email: &str) -> Result<Option<UserForClaims>, AppError> {
+
+
+        // FETCHING FROM DB
+        let user = sqlx::query_as::<_, UserForClaims>(
             r#"
-                SELECT email, password FROM users WHERE email = $1
+                SELECT id, email, password FROM user_creds WHERE email = $1
             "#,
         )
         .bind(email)
@@ -60,7 +63,9 @@ impl Store {
 
     pub async fn create_user(&self, user: UserSignup) -> Result<Json<Value>, AppError> {
         // TODO: Encrypt/bcrypt user passwords
-        let result = sqlx::query("INSERT INTO users(email, password) values ($1, $2)")
+
+        // INTSERTING INTO DB
+        let result = sqlx::query("INSERT INTO user_creds(email, password) values ($1, $2)")
             .bind(&user.email)
             .bind(&user.password)
             .execute(&self.conn_pool)
@@ -100,5 +105,98 @@ impl Store {
         }
         Ok(user_vec)
     }
+
+/*
+    /// TODO: somehow make this more efficient? Maybe use the current user rank and only look at things above it since it will never go below?
+    pub async fn get_rank_from_score(&self, score: i32) -> Result<i32, AppError> {
+        if rank <= 0 {
+            return Ok(0);
+        }
+
+        // Getting the current user information from the rank
+        // This includes the UID, rank, num_guesses, and score
+        let res = sqlx::query_as!(UserAndScore,
+            r#"
+                SELECT * FROM user_ranks WHERE rank = $1 AND rank != 0
+            "#,
+            &rank
+        )
+            .fetch_all(&self.conn_pool)
+            .await
+            .map_err(|_| AppError::InternalServerError)?;
+
+
+
+        Ok(1)
+
+ */
+/*
+        let mut user_rank_vec: Vec<UserAndScore> = Vec::new();
+
+        let filtered_rows = res
+            .iter()
+            .filter(|row| {
+               row.get("rank") != 0
+            })
+            .collect();
+
+    }
+ */
+/*
+    pub async fn get_user_ranks(&self, user: LoggedInUser) -> Result<UserAndRank, AppError> {
+        let res = sqlx::query(
+            r#"
+                    SELECT * FROM user_ranks WHERE id = $1
+               "#
+        )
+            .bind(user.token.id)
+            .fetch_optional(&self.conn_pool)
+            .await
+            .map_err(|_| AppError::UserDoesNotExist)?;
+
+        if let Ok(row) = res {
+            let user_rank = UserAndRank {
+                email: row.get("email"),
+                rank: row.get("rank"),
+            };
+
+            return Ok(user_rank);
+        } else {
+            return Err(AppError::UserDoesNotExist);
+        }
+
+    }
+
+ */
+/*
+    pub async fn update_user_rank(&self, user: LoggedInUser) -> Result<(), AppError> {
+        let user_rank = self.get_user_ranks(user).await?;
+
+        let res = sqlx::query(
+            r#"
+                UPDATE user_ranks(id, rank, total_score, num_guesses) WITH VALUES($1, $2, $3, $4)
+            "#
+        )
+            .bind(&user.token.id)
+            .bind(&user_rank.rank)
+            .bind(&user_rank.)
+
+
+        Ok(())
+    }
+ */
+
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    async fn setup() -> Result<PgPool, sqlx::Error> {
+
+        todo!()
+    }
+
 
 }

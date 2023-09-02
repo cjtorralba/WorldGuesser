@@ -40,6 +40,10 @@ fn init_logging() {
 /// Gets the host value from the .env file
 /// # Returns:
 /// * [SocketAddr]
+///
+/// # .env variables
+/// * API_HOST
+/// * API_PORT
 fn get_host_from_env() -> SocketAddr {
     let host = std::env::var("API_HOST").unwrap();
     let api_host = IpAddr::from_str(&host).unwrap();

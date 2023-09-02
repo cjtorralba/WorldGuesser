@@ -16,12 +16,29 @@ use sqlx::postgres::PgRow;
 /// Contains information vital to users
 #[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
 pub struct User {
+
     /// The users email address
     pub email: String,
 
     /// The users password
     pub password: String,
 }
+
+
+
+/// Contains information vital to users
+#[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
+pub struct UserForClaims {
+    pub id: i32,
+
+    /// The users email address
+    pub email: String,
+
+    /// The users password
+    pub password: String,
+}
+
+
 
 
 
@@ -38,6 +55,7 @@ pub struct UserAndRank {
 pub struct UserAndScore {
     pub email: String,
     pub score: i32,
+    pub rank: i32,
     pub num_guesses: i32,
 }
 
@@ -144,7 +162,7 @@ impl Keys {
 }
 
 /// Lazy struct means that is will only ever be initialized on demand,
-/// and onnce it is initialized, there will only ever be one instance of them
+/// and once it is initialized, there will only ever be one instance of them
 pub static KEYS: Lazy<Keys> = Lazy::new(|| {
     let secret = std::env::var("JWT_SECRET").expect("MISSING JWT SECRET!");
     Keys::new(secret.as_bytes())
