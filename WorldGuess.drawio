@@ -1,0 +1,80 @@
+<mxfile host="app.diagrams.net" modified="2023-09-01T11:50:46.382Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="ON9OpwbJHiXs5Ph_dAFl" version="21.7.1" type="github">
+  <diagram name="Page-1" id="R_YjUMH3s-YCrglK8Cfj">
+    <mxGraphModel dx="1003" dy="1864" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="tsZetXbNBAciIYQOSDn_-3" value="Database" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="-10" width="870" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-4" value="user_creds" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-3">
+          <mxGeometry x="30" y="60" width="390" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-6" value="serial primary id&lt;br&gt;email char(255)&lt;br&gt;password char(255)&lt;br&gt;is_admin boolean" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-4">
+          <mxGeometry x="20" y="60" width="350" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-8" value="user_ranks" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-3">
+          <mxGeometry x="460" y="60" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-9" value="serial primary key references user_creds(id)&lt;br&gt;rank integer&lt;br&gt;total_score integer&lt;br&gt;num_guesses integer" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-8">
+          <mxGeometry x="40" y="60" width="270" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-11" value="Database function" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="560" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-12" value="Text" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="175" y="388" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-13" value="Program flow" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="710" width="1190" height="960" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="tsZetXbNBAciIYQOSDn_-13" source="tsZetXbNBAciIYQOSDn_-14" target="tsZetXbNBAciIYQOSDn_-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="tsZetXbNBAciIYQOSDn_-13" source="tsZetXbNBAciIYQOSDn_-14" target="tsZetXbNBAciIYQOSDn_-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-14" value="Login page&lt;br&gt;Route: &quot;/&quot;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=25;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="100" y="70" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="tsZetXbNBAciIYQOSDn_-13" source="tsZetXbNBAciIYQOSDn_-17" target="tsZetXbNBAciIYQOSDn_-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-17" value="User has cookie&lt;br&gt;and account" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="320" y="60" width="135" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.076;entryY=0.467;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="tsZetXbNBAciIYQOSDn_-13" source="tsZetXbNBAciIYQOSDn_-19" target="tsZetXbNBAciIYQOSDn_-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-19" value="User has no cookies" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="155" y="170" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-21" value="Routes to&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="90" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-22" value="Renders main game page" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="570" y="55" width="115" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="tsZetXbNBAciIYQOSDn_-13" source="tsZetXbNBAciIYQOSDn_-24" target="tsZetXbNBAciIYQOSDn_-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-24" value="User logs in" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="310" y="240" width="185" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="tsZetXbNBAciIYQOSDn_-13" source="tsZetXbNBAciIYQOSDn_-27">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-30" value="If user has account, generate cookie" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="tsZetXbNBAciIYQOSDn_-29">
+          <mxGeometry x="-0.0282" y="5" relative="1" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tsZetXbNBAciIYQOSDn_-27" value="Query database for user" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="tsZetXbNBAciIYQOSDn_-13">
+          <mxGeometry x="570" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
