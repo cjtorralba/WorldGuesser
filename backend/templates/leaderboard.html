@@ -3,25 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&display=swap" rel="stylesheet">
+
     <title>Leaderboard!</title>
+
+    <style>
+
+        html {
+            height: 100%;
+            background: linear-gradient(to bottom, rgb(173, 172, 172), rgba(0, 0, 0));
+        }
+        #rank {
+            background: #8d7dd4;
+            box-shadow: inset 0 0 50px 10px #333333;
+        }
+
+        .user_row {
+            border-radius: 5px;
+            background-color: azure;
+            color: azure;
+            text-align: center;
+        }
+
+
+    </style>
 </head>
-<style>
-
-    html {
-        height: 100%;
-        background: linear-gradient(to bottom, rgb(173, 172, 172), rgba(0, 0, 0));
-    }
-    #rank {
-        background: #8d7dd4;
-        box-shadow: inset 0 0 50px 10px #333333;
-    }
-
-    .user_row {
-        background-color: azure;
-        color: azure;
-    }
-</style>
 <body>
+
+<form action="/" style="text-align: center; padding: 20px;">
+    <input type="submit" value="Play Again!">
+</form>
 
 {% for user in leaderboard.user_list %}
 

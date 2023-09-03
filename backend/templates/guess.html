@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Results!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,8 +30,26 @@
         */
         #guess_text {
             font-family: 'Cinzel', serif;
-            color: wheat;
+            color: black;
         }
+
+        form {
+            padding: 10px;
+        }
+
+
+        .reroute_buttons{
+            border-radius: 5px;
+            box-shadow: inset 0 0 5px 5px #888;
+            background: #fff;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-weight: bolder;
+        }
+
     </style>
 </head>
 <body>
@@ -44,14 +63,14 @@
 </div>
 
 <div id="buttons">
-<form action="/" style="text-align: center; padding: 20px;">
-    <input type="submit" value="Try Again!">
-</form>
-</div>
+    <form action="/" id="home_button">
+        <input class="reroute_buttons" id="submit_home" type="submit" value="Try Again!">
+    </form>
 
-<form action="/leaderboard" style="text-align: center; padding: 20px;">
-      <input type="submit" value="View Leaderboard">
-</form>
+    <form action="/leaderboard" id="leaderboard_button">
+        <input class="reroute_buttons" id="submit_leaderboard" type="submit" value="View Leaderboard">
+    </form>
+</div>
 
 </body>
 </html>
