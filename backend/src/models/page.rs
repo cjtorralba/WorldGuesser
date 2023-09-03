@@ -8,7 +8,7 @@ use axum::Json;
 use serde_derive::{Deserialize, Serialize};
 use tera::ast::ExprVal::Float;
 use tracing::info;
-use crate::models::user::UserAndScore;
+use crate::models::user::UserRankInfo;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PagePackage {
@@ -44,7 +44,7 @@ impl DistancePage {
         })
     }
 
-   pub fn calculate_score(user: UserAndScore) -> i32 {
+   pub fn calculate_score(user: UserRankInfo) -> i32 {
 
 
 

@@ -40,19 +40,20 @@ pub struct UserForClaims {
 
 
 
-
-
-/// Contains users email and rank on the leaderboard.
 #[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
-pub struct UserAndRank {
-    pub email: String,
+pub struct LeaderBoardRow {
+    pub id: i32,
     pub rank: i32,
+    pub total_score: i32,
+    pub num_guesses: i32,
 }
 
 
+
+
 /// Contains users email and rank on the leaderboard.
 #[derive(Serialize, Deserialize, sqlx::FromRow, Debug, Clone)]
-pub struct UserAndScore {
+pub struct UserRankInfo {
     pub email: String,
     pub score: i32,
     pub rank: i32,
@@ -61,7 +62,7 @@ pub struct UserAndScore {
 
 
 
-impl IntoResponse for UserAndRank {
+impl IntoResponse for UserRankInfo {
     fn into_response(self) -> Response {
         Json(self).into_response()
     }

@@ -4,9 +4,11 @@ use serde_json::Value;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{PgPool, Row};
 use tracing::{error, info};
+use crate::AppResult;
 
 use crate::error::AppError;
-use crate::models::user::{LoggedInUser, User, UserAndRank, UserAndScore, UserForClaims, UserSignup};
+use crate::models::location::Location;
+use crate::models::user::{LoggedInUser, User, UserRankInfo, UserForClaims, UserSignup, LeaderBoardRow};
 
 #[derive(Clone)]
 pub struct Store {
@@ -48,13 +50,13 @@ impl Store {
                 SELECT id, email, password FROM user_creds WHERE email = $1
             "#,
         )
-        .bind(email)
-        .fetch_optional(&self.conn_pool)
-        .await
-        .map_err(|f| {
-            error!("Error!: {}", f.to_string());
-            AppError::Any(anyhow::anyhow!(f))
-        })?;
+            .bind(email)
+            .fetch_optional(&self.conn_pool)
+            .await
+            .map_err(|f| {
+                error!("Error!: {}", f.to_string());
+                AppError::Any(anyhow::anyhow!(f))
+            })?;
 
         info!("Query: {:?}", user);
 
@@ -84,27 +86,63 @@ impl Store {
     /// Gets the top 100 users in the database by ranking. If there are less than 100 users, it will get how many it can.
     /// # Returns:
     /// Result<[Vec]<[UserAndRank]>, [AppError]>
-    pub async fn get_top_num_users(&self, num_users: i32) -> Result<Vec<UserAndRank>, AppError> {
-        let rows = sqlx::query(
+    pub async fn get_top_num_users(&self, num_users: i32) -> Result<Vec<LeaderBoardRow>, AppError> {
+        let mut rows = sqlx::query_as::<_, LeaderBoardRow>(
             r#"
-                SELECT * FROM users WHERE rank > 0 AND rank <= $1
+                SELECT id, rank, total_score, num_guesses FROM user_ranks WHERE rank > 0 AND rank <= $1
             "#)
             .bind(num_users)
             .fetch_all(&self.conn_pool)
             .await?;
 
+        rows.sort_by(|a, b| a.rank.cmp(&b.rank));
 
-        let mut user_vec: Vec<UserAndRank> = Vec::new();
+        info!("Top users: {:?}", rows);
 
-        for row in rows {
-            let user = UserAndRank {
-                email: row.get("email"),
-                rank: row.get("rank"),
-            };
-            user_vec.push(user);
-        }
-        Ok(user_vec)
+        Ok(rows)
     }
+
+
+
+
+
+/// Updates and reorganizes the user_ranks table
+/// # Returns
+/// * [Result]<(), [AppError]>
+///
+/// #
+pub async fn update_score(&self, score: f32, id: i32) -> AppResult<()> {
+
+    info!("Updating score table");
+    // Updating the table and organizing it
+    let res = sqlx::query(
+        r#"
+            UPDATE user_ranks SET total_score = total_score + $1, num_guesses = num_guesses + 1 WHERE id = $2
+            "#
+    )
+        .bind(score)
+        .bind(id)
+        .execute(&self.conn_pool)
+        .await?;
+    //TODO: determine if we need to comment or uncomment this as the rows affect by this query could be more than one
+    let rows_affected = res.rows_affected();
+    if rows_affected < 1 || rows_affected > 1 { // Should only ever affect one row, no more no less
+        return Err(AppError::InternalServerError);
+    }
+
+    sqlx::query(
+        r#"
+            UPDATE user_ranks AS t SET rank = r.ranking from (
+                SELECT id, DENSE_RANK() OVER (ORDER BY total_score DESC) AS ranking FROM user_ranks
+            )
+            AS r WHERE t.id = r.id
+            "#
+    )
+        .execute(&self.conn_pool)
+        .await?;
+
+    Ok(())
+}
 
 /*
     /// TODO: somehow make this more efficient? Maybe use the current user rank and only look at things above it since it will never go below?

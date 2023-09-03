@@ -25,6 +25,10 @@ const EARTH_RADIUS_KM: f32 = 6371.0;
 #[allow(dead_code)]
 const KM_TO_MILES: f32 = 0.621371;
 
+const MAX_SCORE: i32 = 100;
+
+const SCORE_FACTOR: f32 = 0.5;
+
 /// Initializes logging for us, so we can see information about requests
 fn init_logging() {
     //From https://github.com/tokio-rs/axum/blob/main/examples/tracing-aka-logging
@@ -53,7 +57,7 @@ fn get_host_from_env() -> SocketAddr {
     SocketAddr::from((api_host, api_port))
 }
 
-/// Runs our backend and initiallizes most of the things we need to run the backend
+/// Runs our backend and initializes most of the things we need to run the backend
 /// Fetches .env file, initializes logging, gets and binds server address
 pub async fn run_backend() {
     // Get environment variables from .env file
@@ -150,6 +154,16 @@ pub fn haversine_distance(lat1: f32, lng1: f32, lat2: f32, lng2: f32) -> f32 {
     let c = 2.0 * a.sqrt().atan2((1.0 - a).sqrt());
 
     EARTH_RADIUS_KM * c
+}
+
+
+/// Generates a score based off of the distance provided
+/// # Returns
+/// * f32
+///
+/// TODO: Scoring algorithm is subject to change
+pub fn get_score_from_distance(distance: f32) -> f32 {
+    MAX_SCORE as f32 - (distance * SCORE_FACTOR)
 }
 
 pub type AppResult<T> = Result<T, AppError>;

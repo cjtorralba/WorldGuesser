@@ -4,11 +4,11 @@ use axum::response::{IntoResponse, Response};
 use serde_derive::{Deserialize, Serialize};
 use crate::db::Store;
 use crate::error::AppError;
-use crate::models::user::{User, UserAndRank};
+use crate::models::user::{LeaderBoardRow, User, UserRankInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct LeaderBoard {
-    user_list: Vec<UserAndRank>,
+    user_list: Vec<LeaderBoardRow>,
 }
 
 impl IntoResponse for LeaderBoard {
@@ -18,7 +18,7 @@ impl IntoResponse for LeaderBoard {
 }
 
 impl LeaderBoard {
-    pub fn new(user_list: Vec<UserAndRank>) -> Self {
+    pub fn new(user_list: Vec<LeaderBoardRow>) -> Self {
         Self {
            user_list,
         }

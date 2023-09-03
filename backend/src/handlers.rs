@@ -17,7 +17,7 @@ use crate::db::Store;
 use crate::error::AppError;
 
 use crate::models::city::City;
-use crate::{get_timestamp_after_8_hours, haversine_distance};
+use crate::{get_score_from_distance, get_timestamp_after_8_hours, haversine_distance};
 
 use crate::models::city_with_image::CityAndImage;
 use crate::models::leaderboard::LeaderBoard;
@@ -174,6 +174,7 @@ pub async fn leaderboard(
     OptionalClaims(claims): OptionalClaims
     ) -> Result<Response<Body>, AppError> {
 
+
     let user_rank_list = database.get_top_num_users(100).await?; // TODO: change this to NOT A MAGIC NUMBER
     let leaderboard = LeaderBoard::new(user_rank_list);
 
@@ -208,7 +209,8 @@ pub async fn guess_location(
     Form(location): Form<Location>,
 ) -> Result<Response<Body>, AppError> {
 
-    database.get_top_num_users(4).await?;
+    info!("Guess location");
+    //database.get_top_num_users(4).await?;
 
     let mut context = Context::new();
 
@@ -218,7 +220,18 @@ pub async fn guess_location(
 
         let city_page = City::get_city_in_page_from_rank(location.city_id.clone()).await?;
 
+
         let distance = DistancePage::new(city_page.city.clone(), location.lat, location.lng)?;
+
+
+        // Extracting lat and lng from city_page for better code readability
+        let (lat, lng) = (city_page.city.latitude, city_page.city.longitude);
+        let distance_int = haversine_distance(lat, lng, location.lat, location.lng);
+
+        let score = get_score_from_distance(distance_int);
+
+        info!("Distance aquired, updating score");
+        database.update_score(score, claims_data.id).await?;
 
         let map = StaticGuessMap::get_static_map_with_markers(
             location.city_id,
@@ -287,7 +300,7 @@ pub async fn login(
             // Here we have authenticated users identity
             // create jwt token to return
             let claims = Claims {
-                id: 0,
+                id: user.id,
                 email: creds.email.to_owned(),
                 exp: get_timestamp_after_8_hours(),
             };
